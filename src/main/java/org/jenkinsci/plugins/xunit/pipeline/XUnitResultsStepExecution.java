@@ -34,6 +34,7 @@ import hudson.tasks.junit.TestResultSummary;
 import hudson.tasks.junit.pipeline.JUnitResultsStepExecution;
 import hudson.tasks.test.PipelineTestDetails;
 import org.jenkinsci.lib.dtkit.type.TestType;
+import org.jenkinsci.plugins.workflow.actions.WarningAction;
 import org.jenkinsci.plugins.workflow.graph.FlowNode;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.SynchronousStepExecution;
@@ -87,7 +88,9 @@ public class XUnitResultsStepExecution extends SynchronousStepExecution<TestResu
             if (runResult == null) {
                 runResult = Result.SUCCESS;
             }
-            // TODO: Once JENKINS-43995 lands, update this to set the step status instead of the entire build.
+            if (procResult == Result.UNSTABLE) {
+                node.addOrReplaceAction(new WarningAction(Result.UNSTABLE).withMessage("Tests failed"));
+            }
             if (procResult.isWorseThan(runResult)) {
                 run.setResult(procResult);
             }
