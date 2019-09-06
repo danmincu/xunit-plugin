@@ -40,6 +40,7 @@ import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.SynchronousStepExecution;
 import org.jenkinsci.plugins.xunit.ExtraConfiguration;
 import org.jenkinsci.plugins.xunit.XUnitProcessor;
+import org.jenkinsci.plugins.xunit.XUnitTestResultSummary;
 import org.jenkinsci.plugins.xunit.threshold.XUnitThreshold;
 
 import javax.annotation.Nonnull;
@@ -89,16 +90,17 @@ public class XUnitResultsStepExecution extends SynchronousStepExecution<TestResu
                 runResult = Result.SUCCESS;
             }
             if (procResult == Result.UNSTABLE) {
+                // This sets the stage result in a way that can be parsed using the wfapi for stage view and blueocean
                 node.addOrReplaceAction(new WarningAction(Result.UNSTABLE).withMessage("Tests failed"));
             }
             if (procResult.isWorseThan(runResult)) {
                 run.setResult(procResult);
             }
 
-            return new TestResultSummary(action.getResult().getResultByNode(nodeId));
+            return new XUnitTestResultSummary(action.getResult().getResultByNode(nodeId), procResult.toString());
         }
 
-        return new TestResultSummary();
+        return new XUnitTestResultSummary();
     }
 
     private static final long serialVersionUID = 1L;
