@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>quarantine-xunit</artifactId>
-    <version>2.3.7</version>
+    <version>2.3.8</version>
     <packaging>hpi</packaging>
     <name>Quarantine xUnit plugin</name>
     <url>http://wiki.jenkins-ci.org/display/JENKINS/xUnit+Plugin</url>
